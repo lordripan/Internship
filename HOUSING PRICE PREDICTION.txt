@@ -1,0 +1,821 @@
+HOUSING PRICE PREDICTION
+Houses are one of the necessary need of each and every person around the globe and therefore housing and real estate market is one of the markets which is one of the major contributors in the world’s economy. It is a very large market and there are various companies working in the domain. Data science comes as a very important tool to solve problems in the domain to help the companies increase their overall revenue, profits, improving their marketing strategies and focusing on changing trends in house sales and purchases. Predictive modelling, Market mix modelling, recommendation systems are some of the machine learning techniques used for achieving the business goals for housing companies. Our problem is related to one such housing company. A US-based housing company named Surprise Housing has decided to enter the Australian market. The company uses data analytics to purchase houses at a price below their actual values and flip them at a higher price. For the same purpose, the company has collected a data set from the sale of houses in Australia. 
+Import necessary libraries for model building
+import numpy as np 
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# for model building
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression, Ridge, Lasso
+from sklearn.model_selection import GridSearchCV
+from sklearn.feature_selection import RFE
+import statsmodels.api as sm
+# for model evaluation
+from sklearn.metrics import r2_score
+from sklearn.metrics import mean_squared_error
+# for suppressing warnings
+import warnings
+warnings.filterwarnings("ignore")
+load the dataset
+housing_df=pd.read_csv(r"C:\Users\OM RAJ PANDEY\Desktop\Project-Housing--2---1---1-\Project-Housing_splitted\train.csv")
+Check the top five columns of the dataset
+housing_df.head()
+Taking all the information of all the columns using info() function.
+housing_df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 1168 entries, 0 to 1167
+Data columns (total 81 columns):
+ #   Column         Non-Null Count  Dtype  
+---  ------         --------------  -----  
+ 0   Id             1168 non-null   int64  
+ 1   MSSubClass     1168 non-null   int64  
+ 2   MSZoning       1168 non-null   object 
+ 3   LotFrontage    954 non-null    float64
+ 4   LotArea        1168 non-null   int64  
+ 5   Street         1168 non-null   object 
+ 6   Alley          77 non-null     object 
+ 7   LotShape       1168 non-null   object 
+ 8   LandContour    1168 non-null   object 
+ 9   Utilities      1168 non-null   object 
+ 10  LotConfig      1168 non-null   object 
+ 11  LandSlope      1168 non-null   object 
+ 12  Neighborhood   1168 non-null   object 
+ 13  Condition1     1168 non-null   object 
+ 14  Condition2     1168 non-null   object 
+ 15  BldgType       1168 non-null   object 
+ 16  HouseStyle     1168 non-null   object 
+ 17  OverallQual    1168 non-null   int64  
+ 18  OverallCond    1168 non-null   int64  
+ 19  YearBuilt      1168 non-null   int64  
+ 20  YearRemodAdd   1168 non-null   int64  
+ 21  RoofStyle      1168 non-null   object 
+ 22  RoofMatl       1168 non-null   object 
+ 23  Exterior1st    1168 non-null   object 
+ 24  Exterior2nd    1168 non-null   object 
+ 25  MasVnrType     1161 non-null   object 
+ 26  MasVnrArea     1161 non-null   float64
+ 27  ExterQual      1168 non-null   object 
+ 28  ExterCond      1168 non-null   object 
+ 29  Foundation     1168 non-null   object 
+ 30  BsmtQual       1138 non-null   object 
+ 31  BsmtCond       1138 non-null   object 
+ 32  BsmtExposure   1137 non-null   object 
+ 33  BsmtFinType1   1138 non-null   object 
+ 34  BsmtFinSF1     1168 non-null   int64  
+ 35  BsmtFinType2   1137 non-null   object 
+ 36  BsmtFinSF2     1168 non-null   int64  
+ 37  BsmtUnfSF      1168 non-null   int64  
+ 38  TotalBsmtSF    1168 non-null   int64  
+ 39  Heating        1168 non-null   object 
+ 40  HeatingQC      1168 non-null   object 
+ 41  CentralAir     1168 non-null   object 
+ 42  Electrical     1168 non-null   object 
+ 43  1stFlrSF       1168 non-null   int64  
+ 44  2ndFlrSF       1168 non-null   int64  
+ 45  LowQualFinSF   1168 non-null   int64  
+ 46  GrLivArea      1168 non-null   int64  
+ 47  BsmtFullBath   1168 non-null   int64  
+ 48  BsmtHalfBath   1168 non-null   int64  
+ 49  FullBath       1168 non-null   int64  
+ 50  HalfBath       1168 non-null   int64  
+ 51  BedroomAbvGr   1168 non-null   int64  
+ 52  KitchenAbvGr   1168 non-null   int64  
+ 53  KitchenQual    1168 non-null   object 
+ 54  TotRmsAbvGrd   1168 non-null   int64  
+ 55  Functional     1168 non-null   object 
+ 56  Fireplaces     1168 non-null   int64  
+ 57  FireplaceQu    617 non-null    object 
+ 58  GarageType     1104 non-null   object 
+ 59  GarageYrBlt    1104 non-null   float64
+ 60  GarageFinish   1104 non-null   object 
+ 61  GarageCars     1168 non-null   int64  
+ 62  GarageArea     1168 non-null   int64  
+ 63  GarageQual     1104 non-null   object 
+ 64  GarageCond     1104 non-null   object 
+ 65  PavedDrive     1168 non-null   object 
+ 66  WoodDeckSF     1168 non-null   int64  
+ 67  OpenPorchSF    1168 non-null   int64  
+ 68  EnclosedPorch  1168 non-null   int64  
+ 69  3SsnPorch      1168 non-null   int64  
+ 70  ScreenPorch    1168 non-null   int64  
+ 71  PoolArea       1168 non-null   int64  
+ 72  PoolQC         7 non-null      object 
+ 73  Fence          237 non-null    object 
+ 74  MiscFeature    44 non-null     object 
+ 75  MiscVal        1168 non-null   int64  
+ 76  MoSold         1168 non-null   int64  
+ 77  YrSold         1168 non-null   int64  
+ 78  SaleType       1168 non-null   object 
+ 79  SaleCondition  1168 non-null   object 
+ 80  SalePrice      1168 non-null   int64  
+dtypes: float64(3), int64(35), object(43)
+memory usage: 739.2+ KB
+
+Taking all the statistical information of numerical features using describe() function.
+housing_df.describe()
+Saperating the categorical and numerical features for analysis.
+numeric_df=housing_df.select_dtypes(include=['int64','float64'])
+categorical_df=housing_df.select_dtypes(include=['object'])
+Checking all the numerical columns.
+numeric_df.columns
+Index(['Id', 'MSSubClass', 'LotFrontage', 'LotArea', 'OverallQual',
+       'OverallCond', 'YearBuilt', 'YearRemodAdd', 'MasVnrArea', 'BsmtFinSF1',
+       'BsmtFinSF2', 'BsmtUnfSF', 'TotalBsmtSF', '1stFlrSF', '2ndFlrSF',
+       'LowQualFinSF', 'GrLivArea', 'BsmtFullBath', 'BsmtHalfBath', 'FullBath',
+       'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr', 'TotRmsAbvGrd',
+       'Fireplaces', 'GarageYrBlt', 'GarageCars', 'GarageArea', 'WoodDeckSF',
+       'OpenPorchSF', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea',
+       'MiscVal', 'MoSold', 'YrSold', 'SalePrice'],
+      dtype='object')
+Analyzing numerical data:
+Outlier detection: Checking percentage of outliers for all the numerical columns
+outliers_percentage={}
+
+for feature in numeric_df.columns:
+    IQR=numeric_df[feature].quantile(.75)-numeric_df[feature].quantile(.25)
+    outliers_count=numeric_df[(numeric_df[feature]>(numeric_df[feature].quantile(.75)+1.5*IQR)) | (numeric_df[feature]<(numeric_df[feature].quantile(.25)-1.5*IQR))].shape[0]
+                                                                                                
+                                                                                               
+    outliers_percentage[feature]=round(outliers_count/numeric_df.shape[0]*100,2)
+    
+outlier_df=pd.DataFrame({'Features':list(outliers_percentage.keys()),'Percentage':list(outliers_percentage.values())})
+outlier_df.sort_values(by="Percentage",ascending=False)
+Comment: Majority of the numeric features have outliers. Dropping all the outliers will cause loss of information. Hence reassigning fixed minimum and maximum values to those rows where feature value is outside the range of [25th percenntile-1.5 IQR, 75th percentile+1.5IQR] IQR or Inter Quantile Range=Difference between 75th percentile and 25th percentile values of a feature. Target column 'SalePrice' is excluded in this.
+
+1
+for feature,percentage in outliers_percentage.items():
+    if feature!='SalePrice':
+        IQR=housing_df[feature].quantile(.75)-housing_df[feature].quantile(.25)
+        max_value=housing_df[feature].quantile(.75)+1.5*IQR
+        min_value=housing_df[feature].quantile(.25)-1.5*IQR
+        housing_df[feature][housing_df[feature]>max_value]=max_value
+        housing_df[feature][housing_df[feature]<min_value]=min_value
+Checking the datset after aeassining minimum and maximum values
+housing_df.describe()
+ Checking Correlation in Numeric Data
+plt.figure(figsize=(20,16))
+sns.heatmap(numeric_df.corr(),annot=True)
+plt.show()
+Comments:Some of the features have high correlation with each other One feature from each of these pair will be dropped after data visualization
+Univariate and Bivariate Analysis-Numerical Features
+Analyzing Numerical Features with continuous values
+fig=plt.subplots(figsize=(12,12))
+
+for i, feature in enumerate(['MSSubClass', 'LotFrontage', 'LotArea', 'MasVnrArea', 'BsmtFinSF1', 'BsmtFinSF2', 'BsmtUnfSF',
+                            'TotalBsmtSF', '1stFlrSF', '2ndFlrSF']):
+    plt.subplot(9,3,i+1)
+    plt.subplots_adjust(hspace=2.0)
+    sns.scatterplot(housing_df[feature], housing_df['SalePrice'])
+    plt.tight_layout()
+Comment: Feature like 'LotFrontage','LotArea','TotalBsmtSF','1stFlrSF','2ndFlrSF'are showing positive correlation with SalePrice 'MSSubClass' has discrete values 'BsmtSF2' has single value and can be dropped
+fig=plt.subplots(figsize=(12,12))
+
+for i, feature in enumerate(['LowQualFinSF','GrLivArea','GarageCars', 'GarageArea','WoodDeckSF','OpenPorchSF','EnclosedPorch','3SsnPorch',
+                            'ScreenPorch','PoolArea','MiscVal']):
+    plt.subplot(9,3,i+1)
+    plt.subplots_adjust(hspace=2.0)
+    sns.scatterplot(housing_df[feature], housing_df['SalePrice'])
+    plt.tight_layout()
+Comment: 'GrLivArea' and 'GarageArea' are showing positive correlation with SalePrice. 'LowQualFinSF','EnclosedPorch','3SsnPorch','ScreenPorch','PoolArea','MiscVar' features have single values and can be dropped
+Visualizing the distribution of the numeric features
+housing_df[['LowQualFinSF','GrLivArea','GarageCars','WoodDeckSF','OpenPorchSF','EnclosedPorch','3SsnPorch','ScreenPorch',
+           'PoolArea','MiscVal']].describe()
+Removing these features having values as they won't contribute in predicting SalePrice
+
+housing_df[['LowQualFinSF','EnclosedPorch','3SsnPorch','ScreenPorch','PoolArea','MiscVal']].describe()
+housing_df.drop(['LowQualFinSF','EnclosedPorch','3SsnPorch','ScreenPorch','PoolArea','MiscVal'],axis=1,inplace=True)
+
+#Checking the remaining columns
+housing_df.columns
+Index(['Id', 'MSSubClass', 'MSZoning', 'LotFrontage', 'LotArea', 'Street',
+       'Alley', 'LotShape', 'LandContour', 'Utilities', 'LotConfig',
+       'LandSlope', 'Neighborhood', 'Condition1', 'Condition2', 'BldgType',
+       'HouseStyle', 'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd',
+       'RoofStyle', 'RoofMatl', 'Exterior1st', 'Exterior2nd', 'MasVnrType',
+       'MasVnrArea', 'ExterQual', 'ExterCond', 'Foundation', 'BsmtQual',
+       'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinSF1',
+       'BsmtFinType2', 'BsmtFinSF2', 'BsmtUnfSF', 'TotalBsmtSF', 'Heating',
+       'HeatingQC', 'CentralAir', 'Electrical', '1stFlrSF', '2ndFlrSF',
+       'GrLivArea', 'BsmtFullBath', 'BsmtHalfBath', 'FullBath', 'HalfBath',
+       'BedroomAbvGr', 'KitchenAbvGr', 'KitchenQual', 'TotRmsAbvGrd',
+       'Functional', 'Fireplaces', 'FireplaceQu', 'GarageType', 'GarageYrBlt',
+       'GarageFinish', 'GarageCars', 'GarageArea', 'GarageQual', 'GarageCond',
+       'PavedDrive', 'WoodDeckSF', 'OpenPorchSF', 'PoolQC', 'Fence',
+       'MiscFeature', 'MoSold', 'YrSold', 'SaleType', 'SaleCondition',
+       'SalePrice'],
+      dtype='object')
+Analyzing Numerical Features with Discrete Values
+housing_df[['OverallQual','OverallCond','MoSold','YrSold','BsmtFullBath','BsmtHalfBath','FullBath','HalfBath','BedroomAbvGr',
+           'KitchenAbvGr','TotRmsAbvGrd','Fireplaces','GarageYrBlt','YearBuilt','YearRemodAdd']]
+fig=plt.subplots(figsize=(12,12))
+
+for i, feature in enumerate(['OverallQual','OverallCond','MoSold','YrSold','BsmtFullBath','BsmtHalfBath','FullBath','HalfBath',
+                            'BedroomAbvGr','KitchenAbvGr','TotRmsAbvGrd','Fireplaces','GarageYrBlt','YearBuilt','YearRemodAdd']):
+    plt.subplot(9,3,i+1)
+    plt.subplots_adjust(hspace=2.0)
+    sns.barplot(housing_df[feature], housing_df['SalePrice'])
+    plt.tight_layout()
+Comment: Following are the observationns from the plots. OverallQual:More the rating of this feature,more the SalePrice(target variable) OverallCond: SalePrice is highest for rating 5 MoSold and YrSold: SalePrice does not show a strong trend depending on month and year on which realty is sold. FullBath:2 and'HalfBath'=1 have highest SalePrice. TotRmsAbvGrd:More the numer of total rooms above grade more the Sale Price. GarageYrBlt,YearBuilt,YearRemodAdd,YrSold:Will extract new features from to identify any trend BsmtFullBath, KitchenAbvGr: Need further inspection for meaningful insight
+housing_df[['BsmtFullBath','KitchenAbvGr','GarageYrBlt','YearBuilt','YearRemodAdd']].describe()
+print(housing_df['BsmtFullBath'].value_counts())
+print(housing_df['KitchenAbvGr'].value_counts())
+0.0    686
+1.0    468
+2.0     13
+2.5      1
+Name: BsmtFullBath, dtype: int64
+1    1168
+Name: KitchenAbvGr, dtype: int64
+# dropping KitchenAbvGr for not having useful information
+housing_df.drop(['KitchenAbvGr'],axis=1,inplace=True)
+housing_df[['GarageYrBlt','YearBuilt','YearRemodAdd','YrSold']].describe()
+Converting the year related features into number of years
+
+for feature in['GarageYrBlt','YearBuilt','YearRemodAdd','YrSold']:
+    housing_df[feature]=2022-housing_df[feature]
+fig=plt.subplots(figsize=(12,12))
+for i, feature in enumerate(['GarageYrBlt','YearBuilt','YearRemodAdd','YrSold']):
+    plt.subplot(4,2,i+1)
+    plt.subplots_adjust(hspace=2.0)
+    sns.scatterplot(housing_df[feature],housing_df['SalePrice'])
+    plt.tight_layout()
+Comment: For most the realty properties Garage is built within last 20 years, SalePrice is more recently built garages. SalePrice is more lower value of YearBuilt i.e. more recently build houses. Recently remodeledhouses(lower value of YearRemodAdd) have higher SalePrice. YrSold still does not show any significant trend.
+Missing Value Handling-Numerical Features
+print("Feature : Percentage of Missing Value")
+print("======================================")
+
+for feat in housing_df.select_dtypes(exclude=['object']).columns:
+    if housing_df[feat].isnull().any():
+        print(feat, ':',round(housing_df[feat].isnull().sum()/housing_df.shape[0],2)*100)
+Feature : Percentage of Missing Value
+======================================
+LotFrontage : 18.0
+MasVnrArea : 1.0
+GarageYrBlt : 5.0
+
+# Since MasvnrArea has only 1% data missing, dropping rows with NULL values in MasVnArea
+# Dropping id column as it does not conribute towards predicting SalePrice
+housing_df=housing_df[~housing_df['MasVnrArea'].isnull()]
+housing_df.drop(['Id'],axis=1,inplace=True)
+numeric_df.drop(['Id'],axis=1,inplace=True)
+# Checking the number of remaining columns
+housing_df.columns.shape
+(73,)
+Comment: GarageCars and GarageArea have high correlation, dropping GargeCars GarageYrBilt and YearBuilt have hige correlation, dropping GarageYrBlt for high correlation and containing missing value TotRmsAbvGrd and GrLivArea have high correlation, dropping GrLivArea TotalBsmtSF and 1stflrSF have high correlation, dropping TotalBsmtSF Missing Value imputation to be done for housing_df[LotFrontage] after spliitting data into train and test set to avoid data leakage
+housing_df.drop(['GarageCars','GarageYrBlt','GrLivArea','TotalBsmtSF'],axis=1,inplace=True)
+
+# Checking the number of remaining columns
+print(housing_df.columns.shape)
+(69,)
+Analyzing Categorical Features¶
+# Categorical feturess in the dataframe
+categorical_df.columns
+Index(['MSZoning', 'Street', 'Alley', 'LotShape', 'LandContour', 'Utilities',
+       'LotConfig', 'LandSlope', 'Neighborhood', 'Condition1', 'Condition2',
+       'BldgType', 'HouseStyle', 'RoofStyle', 'RoofMatl', 'Exterior1st',
+       'Exterior2nd', 'MasVnrType', 'ExterQual', 'ExterCond', 'Foundation',
+       'BsmtQual', 'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2',
+       'Heating', 'HeatingQC', 'CentralAir', 'Electrical', 'KitchenQual',
+       'Functional', 'FireplaceQu', 'GarageType', 'GarageFinish', 'GarageQual',
+       'GarageCond', 'PavedDrive', 'PoolQC', 'Fence', 'MiscFeature',
+       'SaleType', 'SaleCondition'],
+      dtype='object')
+Missing Value Handling-Categorical Features¶
+print("Feature : Percentage of Missing Value")
+print("======================================")
+
+for feat in housing_df.select_dtypes(include=['object']).columns:
+    if housing_df[feat].isnull().any():
+        print(feat, ':', round(housing_df[feat].isnull().sum()/housing_df.shape[0],2)*100)
+Feature : Percentage of Missing Value
+======================================
+Alley : 93.0
+BsmtQual : 3.0
+BsmtCond : 3.0
+BsmtExposure : 3.0
+BsmtFinType1 : 3.0
+BsmtFinType2 : 3.0
+FireplaceQu : 47.0
+GarageType : 6.0
+GarageFinish : 6.0
+GarageQual : 6.0
+GarageCond : 6.0
+PoolQC : 99.0
+Fence : 80.0
+MiscFeature : 96.0
+housing_df['Electrical'].isnull().sum()
+0
+housing_df['PoolQC'].value_counts()
+Gd    3
+Ex    2
+Fa    2
+Name: PoolQC, dtype: int64
+Comment: For 'Alley'NaN neabs 'No access to alley'. For BsmtQual,BsmtCond,BsmtExposure,BsmtFinType1,BsmtFinType2 Nan means 'No Basement'. For GarageType, GarageFinish, GarageQual, GarageCond Nan means "No garage". For FireplaceQu and Fence Nan means 'No Fire Place'and 'No Fence' respectively. MiscFeature-Nan means no additional features mentioned.
+mv_categorical_features=['Alley','BsmtQual','BsmtCond','BsmtExposure','BsmtFinType1','BsmtFinType2','GarageType','GarageFinish',
+                        'GarageQual','GarageCond','FireplaceQu','Fence','MiscFeature']
+print(housing_df[mv_categorical_features].isnull().sum())
+Alley           1085
+BsmtQual          30
+BsmtCond          30
+BsmtExposure      31
+BsmtFinType1      30
+BsmtFinType2      31
+GarageType        64
+GarageFinish      64
+GarageQual        64
+GarageCond        64
+FireplaceQu      548
+Fence            924
+MiscFeature     1117
+dtype: int64
+# Imputing missing values with Not_applicable
+housing_df[mv_categorical_features]=housing_df[mv_categorical_features].fillna(value='Not_applicable',axis=1)
+
+# Checking after imputation
+print(housing_df[mv_categorical_features].isnull().sum())
+Alley           0
+BsmtQual        0
+BsmtCond        0
+BsmtExposure    0
+BsmtFinType1    0
+BsmtFinType2    0
+GarageType      0
+GarageFinish    0
+GarageQual      0
+GarageCond      0
+FireplaceQu     0
+Fence           0
+MiscFeature     0
+dtype: int64
+# dropping PoolQC for very high percentage of missing value and highy imbalance data(if missing value is imputed)
+housing_df.drop(['PoolQC'],axis=1,inplace=True)
+
+# dropping rows with null values in Electrical for very low missing value count
+housing_df.dropna(subset=['Electrical'],inplace=True)
+print("Feature : Percentage of Missing Value")
+print("======================================")
+for feat in housing_df.columns:
+    if housing_df[feat].isnull().any():
+        print(feat, ':',round(housing_df[feat].isnull().sum()/housing_df.shape[0],2)*100)
+Feature : Percentage of Missing Value
+======================================
+LotFrontage : 18.0
+Missing Value imputation will be done after splitting the data into train and test set to avoid data leakage
+housing_df.columns.shape
+(68,)
+Function to generate boxplot for SalePrice against differennt features given the list of features
+
+def generate_boxplot(feature_list):
+    fig=plt.subplots(figsize=(20,16))
+    for i, feature in enumerate(feature_list):
+        plt.subplot(4,2,i+1)
+        plt.subplots_adjust(hspace=2.0)
+        sns.boxplot(housing_df['SalePrice'],housing_df[feature])
+        plt.tight_layout()
+Dividing the ordinal features into smaller segments andd visualizing their impact on SalePrice.
+Analyzing Ordered Features¶
+ext_features=['LotShape','Utilities','LandSlope','HouseStyle','ExterQual','ExterCond']
+generate_boxplot(ext_features)
+int_features=['HeatingQC','KitchenQual','Functional','FireplaceQu']
+
+generate_boxplot(int_features)
+garage_features=['GarageFinish','GarageQual','GarageCond']
+
+generate_boxplot(garage_features)
+basement_features=['BsmtQual','BsmtCond','BsmtExposure','BsmtFinType1','BsmtFinType2']
+
+generate_boxplot(basement_features)
+Encoding Categorical Features
+housing_df['LotShape']=housing_df['LotShape'].map({'IR1':0,'IR2':1,'IR3':2,'Reg':3})
+housing_df['Utilities']=housing_df['Utilities'].map({'AllPub':3,'NoSewr':2,'NoSewa':1,'ELO':0})
+housing_df['LandSlope']=housing_df['LandSlope'].map({'Gtl':0,'Mod':1,'Sev':2})
+housing_df['HouseStyle']=housing_df['HouseStyle'].map({'1Story':0,'1.SUnf':1,'1.SFin':2,'2Story':3,'2.SUnf':4,'2.SFin':5,'SFoyer':6,
+                                                     'SLvl':7})
+housing_df['ExterQual']=housing_df['ExterQual'].map({'Po':0,'Fa':1,'TA':2,'Gd':3,'Ex':4})
+housing_df['ExterCond']=housing_df['ExterCond'].map({'Po':0,'Fa':1,'TA':2,'Gd':3,'Ex':4})
+housing_df['BsmtQual']=housing_df['BsmtQual'].map({'Not_applicable':0,'Po':1,'Fa':2,'TA':3,'Gd':4,'Ex':5})
+housing_df['BsmtCond']=housing_df['BsmtCond'].map({'Not_applicable':0,'Po':1,'Fa':2,'TA':3,'GD':4,'Ex':5})
+housing_df['BsmtExposure']=housing_df['BsmtExposure'].map({'Not_applicable':0,'No':1,'Mn':2,'Av':3,'Gd':4})
+housing_df['BsmtFinType1']=housing_df['BsmtFinType1'].map({'Not_applicable':0,'Unf':1,'LwQ':2,'Rec':3,'BLQ':4,'ALQ':5,'GLQ':6})
+housing_df['BsmtFinType2']=housing_df['BsmtFinType2'].map({'Not_applicable':0,'Unf':1,'LwQ':2,'Rec':3,'BLQ':4,'ALQ':5,'GLQ':6})
+housing_df['HeatingQC']=housing_df['HeatingQC'].map({'Po':0,'Fa':1,'TA':2,'Gd':3,'Ex':4})
+housing_df['CentralAir']=housing_df['CentralAir'].map({'N':0,'Y':1})
+housing_df['KitchenQual']=housing_df['KitchenQual'].map({'Po':0,'Fa':1,'TA':2,'GD':3,'Ex':4})
+housing_df['GarageFinish']=housing_df['GarageFinish'].map({'Not_applicable':0,'Unf':1,'RFn':2,'Fin':3})
+housing_df['GarageQual']=housing_df['GarageQual'].map({'Not_applicable':0,'Po':1,'Fa':2,'TA':3,'Gd':4,'Ex':5})
+housing_df['GarageCond']=housing_df['GarageCond'].map({'Not_applicable':0,'Po':1,'Fa':2,'TA':3,'Gd':4,'Ex':5})
+housing_df['Functional']=housing_df['Functional'].map({'Typ':0,'Min1':1,'Min2':2,'Mod':3,'Maj1':4,'Maj2':5,'Sev':6,'Sal':7})
+housing_df['FireplaceQu']=housing_df['FireplaceQu'].map({'Not_applicable':0,'Po':1,'Fa':2,'TA':3,'Gd':4,'Ex':5})
+# Checking the features after encoding
+housing_df[['LotShape','Utilities','LandSlope','HouseStyle','ExterQual','ExterCond','BsmtQual','BsmtCond','BsmtExposure',
+           'BsmtFinType1','BsmtFinType2','HeatingQC','CentralAir','KitchenQual','GarageFinish','GarageQual','GarageCond',
+           'Functional','FireplaceQu']].info()
+<class 'pandas.core.frame.DataFrame'>
+Int64Index: 1161 entries, 0 to 1167
+Data columns (total 19 columns):
+ #   Column        Non-Null Count  Dtype  
+---  ------        --------------  -----  
+ 0   LotShape      1161 non-null   int64  
+ 1   Utilities     1161 non-null   int64  
+ 2   LandSlope     1161 non-null   int64  
+ 3   HouseStyle    1011 non-null   float64
+ 4   ExterQual     1161 non-null   int64  
+ 5   ExterCond     1161 non-null   int64  
+ 6   BsmtQual      1161 non-null   int64  
+ 7   BsmtCond      1106 non-null   float64
+ 8   BsmtExposure  1161 non-null   int64  
+ 9   BsmtFinType1  1161 non-null   int64  
+ 10  BsmtFinType2  1161 non-null   int64  
+ 11  HeatingQC     1161 non-null   int64  
+ 12  CentralAir    1161 non-null   int64  
+ 13  KitchenQual   688 non-null    float64
+ 14  GarageFinish  1161 non-null   int64  
+ 15  GarageQual    1161 non-null   int64  
+ 16  GarageCond    1161 non-null   int64  
+ 17  Functional    1161 non-null   int64  
+ 18  FireplaceQu   1161 non-null   int64  
+dtypes: float64(3), int64(16)
+memory usage: 181.4 KB
+Analyzing Unordered Features¶
+unordered_features=['MSZoning','Street','Alley','LandContour','LotConfig','Neighborhood','Condition1','Condition2','BldgType',
+                   'RoofStyle','RoofMatl','Exterior1st','Exterior2nd','MasVnrType','Foundation','Heating','Electrical',
+                   'GarageType','PavedDrive','Fence','MiscFeature','SaleType','SaleCondition']
+generate_boxplot(['MSZoning','Street','Alley','LandContour','LotConfig','Neighborhood'])
+generate_boxplot(['Condition1','Condition2','BldgType','RoofStyle','RoofMatl','Exterior1st','Exterior2nd'])
+generate_boxplot(['MasVnrType','Foundation','Heating','Electrical','GarageType','PavedDrive','Fence','MiscFeature'])
+generate_boxplot(['SaleType','SaleCondition'])
+Encoding Categorical Variables¶
+dummy_df=pd.get_dummies(housing_df[unordered_features],drop_first=True)
+dummy_df.shape
+(1161, 142)
+Comment: Adding 142 features to the existing dataset will make the model very complex From the above boxplot, for some categorical fetures only label is dominating over others. In dummy_df any label having same value in 95% or more rows wil be dropped, as those new features are highly imbalanced
+dummies_to_drop=[]
+for feat in dummy_df.columns:
+    if dummy_df[feat].value_counts()[0]/dummy_df.shape[0]>=0.95:
+        dummies_to_drop.append(feat)
+        
+print(dummies_to_drop)
+print(len(dummies_to_drop))
+# Dropping the highly imbalanced dummy variables
+
+dummy_df=dummy_df.drop(dummies_to_drop,axis=1)
+print(dummy_df.shape)
+(1161, 52)
+# Adding the dummy variables to the original dataframe
+housing_df=pd.concat([housing_df,dummy_df],axis=1)
+
+# Importing the redundant columns
+housing_df=housing_df.drop(unordered_features,axis=1)
+housing_df.shape
+(1161, 97)
+housing_df.info()
+<class 'pandas.core.frame.DataFrame'>
+Int64Index: 1161 entries, 0 to 1167
+Data columns (total 97 columns):
+ #   Column                      Non-Null Count  Dtype  
+---  ------                      --------------  -----  
+ 0   MSSubClass                  1161 non-null   int64  
+ 1   LotFrontage                 949 non-null    float64
+ 2   LotArea                     1161 non-null   float64
+ 3   LotShape                    1161 non-null   int64  
+ 4   Utilities                   1161 non-null   int64  
+ 5   LandSlope                   1161 non-null   int64  
+ 6   HouseStyle                  1011 non-null   float64
+ 7   OverallQual                 1161 non-null   int64  
+ 8   OverallCond                 1161 non-null   float64
+ 9   YearBuilt                   1161 non-null   int64  
+ 10  YearRemodAdd                1161 non-null   int64  
+ 11  MasVnrArea                  1161 non-null   float64
+ 12  ExterQual                   1161 non-null   int64  
+ 13  ExterCond                   1161 non-null   int64  
+ 14  BsmtQual                    1161 non-null   int64  
+ 15  BsmtCond                    1106 non-null   float64
+ 16  BsmtExposure                1161 non-null   int64  
+ 17  BsmtFinType1                1161 non-null   int64  
+ 18  BsmtFinSF1                  1161 non-null   float64
+ 19  BsmtFinType2                1161 non-null   int64  
+ 20  BsmtFinSF2                  1161 non-null   int64  
+ 21  BsmtUnfSF                   1161 non-null   int64  
+ 22  HeatingQC                   1161 non-null   int64  
+ 23  CentralAir                  1161 non-null   int64  
+ 24  1stFlrSF                    1161 non-null   int64  
+ 25  2ndFlrSF                    1161 non-null   float64
+ 26  BsmtFullBath                1161 non-null   float64
+ 27  BsmtHalfBath                1161 non-null   int64  
+ 28  FullBath                    1161 non-null   int64  
+ 29  HalfBath                    1161 non-null   int64  
+ 30  BedroomAbvGr                1161 non-null   float64
+ 31  KitchenQual                 688 non-null    float64
+ 32  TotRmsAbvGrd                1161 non-null   int64  
+ 33  Functional                  1161 non-null   int64  
+ 34  Fireplaces                  1161 non-null   float64
+ 35  FireplaceQu                 1161 non-null   int64  
+ 36  GarageFinish                1161 non-null   int64  
+ 37  GarageArea                  1161 non-null   int64  
+ 38  GarageQual                  1161 non-null   int64  
+ 39  GarageCond                  1161 non-null   int64  
+ 40  WoodDeckSF                  1161 non-null   float64
+ 41  OpenPorchSF                 1161 non-null   int64  
+ 42  MoSold                      1161 non-null   int64  
+ 43  YrSold                      1161 non-null   int64  
+ 44  SalePrice                   1161 non-null   int64  
+ 45  MSZoning_RL                 1161 non-null   uint8  
+ 46  MSZoning_RM                 1161 non-null   uint8  
+ 47  Street_Pave                 1161 non-null   uint8  
+ 48  Alley_Not_applicable        1161 non-null   uint8  
+ 49  LandContour_Lvl             1161 non-null   uint8  
+ 50  LotConfig_CulDSac           1161 non-null   uint8  
+ 51  LotConfig_Inside            1161 non-null   uint8  
+ 52  Neighborhood_CollgCr        1161 non-null   uint8  
+ 53  Neighborhood_Edwards        1161 non-null   uint8  
+ 54  Neighborhood_Gilbert        1161 non-null   uint8  
+ 55  Neighborhood_NAmes          1161 non-null   uint8  
+ 56  Neighborhood_NWAmes         1161 non-null   uint8  
+ 57  Neighborhood_NridgHt        1161 non-null   uint8  
+ 58  Neighborhood_OldTown        1161 non-null   uint8  
+ 59  Neighborhood_Sawyer         1161 non-null   uint8  
+ 60  Neighborhood_Somerst        1161 non-null   uint8  
+ 61  Condition1_Feedr            1161 non-null   uint8  
+ 62  Condition1_Norm             1161 non-null   uint8  
+ 63  Condition2_Norm             1161 non-null   uint8  
+ 64  BldgType_TwnhsE             1161 non-null   uint8  
+ 65  RoofStyle_Gable             1161 non-null   uint8  
+ 66  RoofStyle_Hip               1161 non-null   uint8  
+ 67  RoofMatl_CompShg            1161 non-null   uint8  
+ 68  Exterior1st_HdBoard         1161 non-null   uint8  
+ 69  Exterior1st_MetalSd         1161 non-null   uint8  
+ 70  Exterior1st_Plywood         1161 non-null   uint8  
+ 71  Exterior1st_VinylSd         1161 non-null   uint8  
+ 72  Exterior1st_Wd Sdng         1161 non-null   uint8  
+ 73  Exterior2nd_HdBoard         1161 non-null   uint8  
+ 74  Exterior2nd_MetalSd         1161 non-null   uint8  
+ 75  Exterior2nd_Plywood         1161 non-null   uint8  
+ 76  Exterior2nd_VinylSd         1161 non-null   uint8  
+ 77  Exterior2nd_Wd Sdng         1161 non-null   uint8  
+ 78  MasVnrType_BrkFace          1161 non-null   uint8  
+ 79  MasVnrType_None             1161 non-null   uint8  
+ 80  MasVnrType_Stone            1161 non-null   uint8  
+ 81  Foundation_CBlock           1161 non-null   uint8  
+ 82  Foundation_PConc            1161 non-null   uint8  
+ 83  Heating_GasA                1161 non-null   uint8  
+ 84  Electrical_SBrkr            1161 non-null   uint8  
+ 85  GarageType_Attchd           1161 non-null   uint8  
+ 86  GarageType_BuiltIn          1161 non-null   uint8  
+ 87  GarageType_Detchd           1161 non-null   uint8  
+ 88  GarageType_Not_applicable   1161 non-null   uint8  
+ 89  PavedDrive_Y                1161 non-null   uint8  
+ 90  Fence_MnPrv                 1161 non-null   uint8  
+ 91  Fence_Not_applicable        1161 non-null   uint8  
+ 92  MiscFeature_Not_applicable  1161 non-null   uint8  
+ 93  SaleType_New                1161 non-null   uint8  
+ 94  SaleType_WD                 1161 non-null   uint8  
+ 95  SaleCondition_Normal        1161 non-null   uint8  
+ 96  SaleCondition_Partial       1161 non-null   uint8  
+dtypes: float64(13), int64(32), uint8(52)
+memory usage: 476.2 KB
+
+Check unique values of LotFrontage columns.
+housing_df['LotFrontage'].unique()
+array([ nan,  95.,  92., 105.,  58.,  88.,  70.,  80.,  50.,  44., 110.,
+        59.,  55.,  64.,  30.,  68.,  71.,  74.,  61.,  60.,  84.,  65.,
+        76., 100.,  85.,  75., 107.,  82.,  62.,  73.,  79.,  77.,  41.,
+        69.,  90.,  96.,  72.,  34.,  78.,  63.,  40.,  98., 108.,  51.,
+        81.,  99.,  66.,  37.,  87.,  53.,  47.,  86.,  56.,  89.,  52.,
+       104.,  57.,  83.,  46., 101.,  93.,  49.,  43.,  54.,  91.,  67.,
+        97., 103.,  94.,  35.,  48.,  36., 109., 102.,  32.,  42.,  38.,
+        39.,  45., 106.])
+
+Handling Missing Values:
+housing_df['LotFrontage']=housing_df['LotFrontage'].fillna(housing_df['LotFrontage'].median())
+housing_df['HouseStyle']=housing_df['HouseStyle'].fillna(housing_df['HouseStyle'].median())
+housing_df['KitchenQual']=housing_df['KitchenQual'].fillna(housing_df['KitchenQual'].median())
+housing_df['BsmtCond']=housing_df['BsmtCond'].fillna(housing_df['BsmtCond'].median())
+housing_df.info()
+<class 'pandas.core.frame.DataFrame'>
+Int64Index: 1161 entries, 0 to 1167
+Data columns (total 97 columns):
+ #   Column                      Non-Null Count  Dtype  
+---  ------                      --------------  -----  
+ 0   MSSubClass                  1161 non-null   int64  
+ 1   LotFrontage                 1161 non-null   float64
+ 2   LotArea                     1161 non-null   float64
+ 3   LotShape                    1161 non-null   int64  
+ 4   Utilities                   1161 non-null   int64  
+ 5   LandSlope                   1161 non-null   int64  
+ 6   HouseStyle                  1161 non-null   float64
+ 7   OverallQual                 1161 non-null   int64  
+ 8   OverallCond                 1161 non-null   float64
+ 9   YearBuilt                   1161 non-null   int64  
+ 10  YearRemodAdd                1161 non-null   int64  
+ 11  MasVnrArea                  1161 non-null   float64
+ 12  ExterQual                   1161 non-null   int64  
+ 13  ExterCond                   1161 non-null   int64  
+ 14  BsmtQual                    1161 non-null   int64  
+ 15  BsmtCond                    1161 non-null   float64
+ 16  BsmtExposure                1161 non-null   int64  
+ 17  BsmtFinType1                1161 non-null   int64  
+ 18  BsmtFinSF1                  1161 non-null   float64
+ 19  BsmtFinType2                1161 non-null   int64  
+ 20  BsmtFinSF2                  1161 non-null   int64  
+ 21  BsmtUnfSF                   1161 non-null   int64  
+ 22  HeatingQC                   1161 non-null   int64  
+ 23  CentralAir                  1161 non-null   int64  
+ 24  1stFlrSF                    1161 non-null   int64  
+ 25  2ndFlrSF                    1161 non-null   float64
+ 26  BsmtFullBath                1161 non-null   float64
+ 27  BsmtHalfBath                1161 non-null   int64  
+ 28  FullBath                    1161 non-null   int64  
+ 29  HalfBath                    1161 non-null   int64  
+ 30  BedroomAbvGr                1161 non-null   float64
+ 31  KitchenQual                 1161 non-null   float64
+ 32  TotRmsAbvGrd                1161 non-null   int64  
+ 33  Functional                  1161 non-null   int64  
+ 34  Fireplaces                  1161 non-null   float64
+ 35  FireplaceQu                 1161 non-null   int64  
+ 36  GarageFinish                1161 non-null   int64  
+ 37  GarageArea                  1161 non-null   int64  
+ 38  GarageQual                  1161 non-null   int64  
+ 39  GarageCond                  1161 non-null   int64  
+ 40  WoodDeckSF                  1161 non-null   float64
+ 41  OpenPorchSF                 1161 non-null   int64  
+ 42  MoSold                      1161 non-null   int64  
+ 43  YrSold                      1161 non-null   int64  
+ 44  SalePrice                   1161 non-null   int64  
+ 45  MSZoning_RL                 1161 non-null   uint8  
+ 46  MSZoning_RM                 1161 non-null   uint8  
+ 47  Street_Pave                 1161 non-null   uint8  
+ 48  Alley_Not_applicable        1161 non-null   uint8  
+ 49  LandContour_Lvl             1161 non-null   uint8  
+ 50  LotConfig_CulDSac           1161 non-null   uint8  
+ 51  LotConfig_Inside            1161 non-null   uint8  
+ 52  Neighborhood_CollgCr        1161 non-null   uint8  
+ 53  Neighborhood_Edwards        1161 non-null   uint8  
+ 54  Neighborhood_Gilbert        1161 non-null   uint8  
+ 55  Neighborhood_NAmes          1161 non-null   uint8  
+ 56  Neighborhood_NWAmes         1161 non-null   uint8  
+ 57  Neighborhood_NridgHt        1161 non-null   uint8  
+ 58  Neighborhood_OldTown        1161 non-null   uint8  
+ 59  Neighborhood_Sawyer         1161 non-null   uint8  
+ 60  Neighborhood_Somerst        1161 non-null   uint8  
+ 61  Condition1_Feedr            1161 non-null   uint8  
+ 62  Condition1_Norm             1161 non-null   uint8  
+ 63  Condition2_Norm             1161 non-null   uint8  
+ 64  BldgType_TwnhsE             1161 non-null   uint8  
+ 65  RoofStyle_Gable             1161 non-null   uint8  
+ 66  RoofStyle_Hip               1161 non-null   uint8  
+ 67  RoofMatl_CompShg            1161 non-null   uint8  
+ 68  Exterior1st_HdBoard         1161 non-null   uint8  
+ 69  Exterior1st_MetalSd         1161 non-null   uint8  
+ 70  Exterior1st_Plywood         1161 non-null   uint8  
+ 71  Exterior1st_VinylSd         1161 non-null   uint8  
+ 72  Exterior1st_Wd Sdng         1161 non-null   uint8  
+ 73  Exterior2nd_HdBoard         1161 non-null   uint8  
+ 74  Exterior2nd_MetalSd         1161 non-null   uint8  
+ 75  Exterior2nd_Plywood         1161 non-null   uint8  
+ 76  Exterior2nd_VinylSd         1161 non-null   uint8  
+ 77  Exterior2nd_Wd Sdng         1161 non-null   uint8  
+ 78  MasVnrType_BrkFace          1161 non-null   uint8  
+ 79  MasVnrType_None             1161 non-null   uint8  
+ 80  MasVnrType_Stone            1161 non-null   uint8  
+ 81  Foundation_CBlock           1161 non-null   uint8  
+ 82  Foundation_PConc            1161 non-null   uint8  
+ 83  Heating_GasA                1161 non-null   uint8  
+ 84  Electrical_SBrkr            1161 non-null   uint8  
+ 85  GarageType_Attchd           1161 non-null   uint8  
+ 86  GarageType_BuiltIn          1161 non-null   uint8  
+ 87  GarageType_Detchd           1161 non-null   uint8  
+ 88  GarageType_Not_applicable   1161 non-null   uint8  
+ 89  PavedDrive_Y                1161 non-null   uint8  
+ 90  Fence_MnPrv                 1161 non-null   uint8  
+ 91  Fence_Not_applicable        1161 non-null   uint8  
+ 92  MiscFeature_Not_applicable  1161 non-null   uint8  
+ 93  SaleType_New                1161 non-null   uint8  
+ 94  SaleType_WD                 1161 non-null   uint8  
+ 95  SaleCondition_Normal        1161 non-null   uint8  
+ 96  SaleCondition_Partial       1161 non-null   uint8  
+dtypes: float64(13), int64(32), uint8(52)
+memory usage: 476.2 KB
+Splitting into Train and Test Data
+x=housing_df.drop(['SalePrice'],axis=1)
+x.head()
+# Checking the distribution of target variable, SalePrice
+
+plt.title('Distribution of SalePrice')
+sns.distplot(housing_df['SalePrice'])
+plt.show()
+Comment:Since SalePrice is highly right skewed. checking the distribution of transformed SalePrice
+sns.distplot(np.log(housing_df['SalePrice']))
+plt.title('Distribution of log transformed SalePrice')
+plt.show()
+# Log transformed SalePrice is normally distributed, hence transformed data will be used for model building
+
+y=np.log(housing_df['SalePrice'])
+print(y)
+x_train, x_test, y_train, y_test=train_test_split(x, y, test_size=0.2, random_state=101)
+print(x_train.shape)
+print(x_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+(928, 96)
+(233, 96)
+(928,)
+(233,)
+Feature Scaling
+x_train.values
+array([[6.0000e+01, 6.9000e+01, 9.5880e+03, ..., 0.0000e+00, 0.0000e+00,
+        1.0000e+00],
+       [6.0000e+01, 7.3000e+01, 8.7600e+03, ..., 0.0000e+00, 0.0000e+00,
+        1.0000e+00],
+       [2.0000e+01, 1.1000e+02, 1.4442e+04, ..., 1.0000e+00, 1.0000e+00,
+        0.0000e+00],
+       ...,
+       [5.0000e+01, 6.0000e+01, 1.0410e+04, ..., 1.0000e+00, 1.0000e+00,
+        0.0000e+00],
+       [1.2000e+02, 4.0000e+01, 4.6710e+03, ..., 1.0000e+00, 1.0000e+00,
+        0.0000e+00],
+       [2.0000e+01, 8.0000e+01, 1.2984e+04, ..., 1.0000e+00, 1.0000e+00,
+        0.0000e+00]])
+ss=StandardScaler()
+ss.fit(x_train)
+StandardScaler()
+x_tr_scaled=pd.DataFrame(data=ss.transform(x_train), columns=x_train.columns)
+x_te_scaled=pd.DataFrame(data=ss.transform(x_test), columns=x_test.columns)
+# Checking the features after
+print(x_tr_scaled)
+print(x_te_scaled)
+Model Building¶
+#Import the models
+from sklearn.linear_model import LinearRegression
+from sklearn.svm import SVR
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import GradientBoostingRegressor
+# Model Training
+lr=LinearRegression()
+lr.fit(x_tr_scaled, y_train)
+
+svm=SVR()
+svm.fit(x_tr_scaled, y_train)
+
+rf=RandomForestRegressor()
+rf.fit(x_tr_scaled, y_train)
+
+gr=GradientBoostingRegressor()
+gr.fit(x_tr_scaled, y_train)
+GradientBoostingRegressor()
+# Prediction on test data
+y_pred1=lr.predict(x_te_scaled)
+y_pred2=svm.predict(x_te_scaled)
+y_pred3=rf.predict(x_te_scaled)
+y_pred4=gr.predict(x_te_scaled)
+df1=pd.DataFrame({'Actual':y_test,'lr':y_pred1,'svm':y_pred2,'rf':y_pred3,'gr':y_pred4})
+df1
+Actuallrsvmrfgr70111.53272811.63260111.44694511.65611211.58987265711.80894811.80951011.82076411.90585211.90915259911.75194211.71459511.79788611.75606811.73020121412.04941911.92878411.90632111.84053711.84740930013.22956812.97948313.03369212.79005912.885209..................116011.84939811.85256811.79885211.86319811.86560967611.44035511.31698411.45772111.60719611.48842253012.66539412.57280712.34894412.52892012.55332733812.73963812.54775412.75866612.60217212.63891270812.03112411.96952212.03025312.05432112.018203233 rows × 5 columns
+# Compare performance visually
+import matplotlib.pyplot as plt
+
+plt.subplot(221)
+plt.plot(df1['Actual'].iloc[0:11],label='Actual')
+plt.plot(df1['lr'].iloc[0:11],label='lr')
+plt.legend()
+plt.subplot(222)
+plt.plot(df1['Actual'].iloc[0:11],label='Actual')
+plt.plot(df1['svm'].iloc[0:11],label='svm')
+plt.legend()
+plt.subplot(223)
+plt.plot(df1['Actual'].iloc[0:11],label='Actual')
+plt.plot(df1['rf'].iloc[0:11],label='rf')
+plt.legend()
+plt.subplot(224)
+plt.plot(df1['Actual'].iloc[0:11],label='Actual')
+plt.plot(df1['gr'].iloc[0:11],label='gr')
+plt.tight_layout()
+plt.legend()
+# Evaluating the Algorithm
+from sklearn import metrics
+score1=metrics.r2_score(y_test,y_pred1)
+score2=metrics.r2_score(y_test,y_pred2)
+score3=metrics.r2_score(y_test,y_pred3)
+score4=metrics.r2_score(y_test,y_pred4)
+print(score1, score2, score3, score4)
+0.8915571508326268 0.8440058882473518 0.8418610878599222 0.8581256199647994
+On the basis of r2 score linear regression is our best model.
+s1=metrics.mean_absolute_error(y_test, y_pred1)
+s2=metrics.mean_absolute_error(y_test, y_pred2)
+s3=metrics.mean_absolute_error(y_test, y_pred3)
+s4=metrics.mean_absolute_error(y_test, y_pred4)
+print(s1, s2, s3, s4)
+0.08773221712857607 0.10301888327136637 0.11067568318175829 0.0999978560880695
+# Save Model Using Joblib
+lr=LinearRegression()
+lr.fit(x,y)
+LinearRegression()
+import joblib
+joblib.dump(lr,'model_joblib_lr')
+['model_joblib_lr']
+model=joblib.load('model_joblib_lr')
+Conclusion:
+On the basis or r2 score linear regression is our best model.
