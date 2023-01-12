@@ -1,0 +1,210 @@
+PROJECT REPORT ON FLIGHT FARE PRICE PREDICTION
+Overview
+In this article , we will be analyzing the flight fare prediction using Machine Learning dataset using essential exploratory data analysis techniques then will draw some predictions about the price of the flight using machine learning algorithms and some features such as what type of airline it is, what is the arrival time, what is the departure time, what is the arrival time, what is the departure time, what is the duration of the flight, source, destination and more.
+In this report, we do prediction using machine learning which leads to beow takeaways:
+EDA: The complete process of EDA
+DATA ANALYSIS: Withdraw some insights from the dataset both mathematically and visualize it.
+DATA VISUALIZATION: Visualize the data to get better insight from it.
+FEATURE ENGINEERING:  We will also see what kind of stuff we can do in the feature engineering part.
+MODEL BUILDING: We build the various models on the dataset through various machine learning algorithm.
+About the dataset
+1. Airline: So this column will have al the types of airlines like indigo, Jet Airways, Air India, and many more.
+2. Date _of_Journey: This column will let us know about the date on which the passenger’s journey will start.
+3. Source: This column holds the name of the place from where the passenger’s journey will start.
+4. Destination: This column holds the name of the place to where passengers wanted to travel.
+5. Route: Here we can know about that what is the route through which passengers have opted to travel from his/her source to their destination.
+6. Arrival_Time: Arrival time is when the passenger will reach his/her destination.
+7. Duration:  Duration is the whole period that a flight will take to complete its journey from source to destination.
+8. Total_stops: This will let us know in how many places flights will stop there for the flight in the whole journey.
+9. Additional_Info: In this column, we will get information about food, kind of food, and other amenities.
+10. Price: Price of the flight for a complete journey including all the expenses before onboarding.
+Importin Libraries:
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set()
+Load the dataset:
+data=pd.read_excel(r"C:\Users\OM RAJ PANDEY\Desktop\Data_Train.xlsx")
+Checking the first five row of data for observation:
+data.head()
+By observing the dataset we get noticed, the Route column contains a list of cities which we will need to separate, since we would have multiple combinations in our dataset. The Arrival_time column has dates attached along with, which we will need to separate. The Duration, Date_of_Journy column are in a string format, which need to convert to integer type. The Total_stops column has word 'stops' added along with the number of stops, and Dep_Time, Duration columns are also not in an appropriate form which we need to convert into integer.
+Checking the data types of data and null values:
+data.info()
+There is very less null columns so we drop the null columns.
+data.dropna(inplace=True)
+We see in this data all the dependent column are 'object' datatype so as to use these columns properly for model we have to convert these datatype into appropriate form.
+The bar graph is very convenient while comparing categories of data. It helps to track changes over time. It is best for visualizing discrete data.
+
+#univariate analysis
+# Selecting the categorical columns
+categorical_col=data.select_dtypes(include=['object']).columns
+
+#plotting a bar chart for each of the categorical variable
+for column in categorical_col:
+    plt.figure(figsize=(20,4))
+    plt.subplot(121)
+    data[column].value_counts().plot(kind='bar')
+    plt.title(column)
+Jet Airways is the most preferred airline with the highest row count, followed by Indigo and AirIndia. Jet Airways business is the costliest airways. Count for Vistara Premium economy, Trujet, Multiple caries premium economy and Jet airways business is quite low.
+After Data Analysis we'll try to deal with above stuff in Feature Engineering as follows.
+
+Detect the duplicate values:
+data[data.duplicated()].head()
+Drop all the duplicates:
+data.drop_duplicates(keep='first',inplace=True)
+data.head()
+Check the shape of the data
+data.shape
+Checking the Additional_info coumn and hving the count of uique types of values.
+data["Additional_Info"].value_counts()
+Checking the different Airlines
+data["Airline"].unique()
+Checking the different Airline Routes
+data['Route'].unique()
+Feature Engineering
+
+Converting the hours in minute
+data['Duration']=data['Duration'].str.replace("h",'*60').str.replace(' ','+').str.replace('m','*1').apply(eval)
+Organizing the format of the date of journey in our dataset for better preprocessing in the model stage.
+data["Journey_day"]=data['Date_of_Journey'].str.split('/').str[0].astype(int)
+data["Journey_month"]=data['Date_of_Journey'].str.split('/').str[1].astype(int)
+data.drop(['Date_of_Journey'],axis=1, inplace=True)
+converting departure time into hours and minutes
+data['Dep_hour']=pd.to_datetime(data['Dep_Time']).dt.hour
+data['Dep_min']=pd.to_datetime(data['Dep_Time']).dt.minute
+data.drop(['Dep_Time'],axis=1,inplace=True)
+converting the arrival time into hours and minutes.
+data['Arrival_hour']=pd.to_datetime(data.Arrival_Time).dt.hour
+data['Arrival_min']=pd.to_datetime(data.Arrival_Time).dt.minute
+data.drop(['Arrival_Time'],axis=1,inplace=True)
+Checking the top 5 rows of dataset:
+data.head()
+Plotting Bar chart for Months(Duration)vs Number of Flights
+plt.figure(figsize=(10,15))
+plt.title('Count of flights month wise')
+ax=sns.countplot(x='Journey_month',data=data)
+plt.xlabel('Month')
+plt.ylabel('Count of flights')
+for p in ax.patches:
+    ax.annotate(int(p.get_height()),(p.get_x()+0.25,p.get_height()+1),va='bottom',color='black')
+In the above graph we have plotted the count plot for journey in a month vs several flights and got to see that May has the most number of flights.
+Plotting Bar chart for Types of Airline vs Number of Flights
+
+plt.figure(figsize=(20,5))
+plt.title('Count of flights with diferent Airlines')
+ax=sns.countplot(x='Airline',data=data)
+plt.xlabel('Airline')
+plt.ylabel('Count of flights')
+plt.xticks(rotation=45)
+for p in ax.patches:
+    ax.annotate(int(p.get_height()),(p.get_x()+0.25,p.get_height()+1),va='bottom',color='black')
+In the above graph we can see that between the type of airline and count of flights we can see that Jet Airways has the most flight oarded.
+Plotting Ticket Prices VS Airlines
+plt.figure(figsize=(15,4))
+plt.title('Price VS Airlines')
+plt.scatter(data['Airline'],data['Price'])
+plt.xticks
+plt.xlabel('Airline')
+plt.ylabel('Price of ticket')
+plt.xticks(rotation=90)
+Correlation between all Features
+Plotting Correlation
+plt.figure(figsize=(15,15))
+sns.heatmap(data.corr(),annot=True,)
+plt.show()
+Dealing with categorical Data and Numerical Data
+categorical_data=data.select_dtypes(exclude=['int64','float','int32'])
+numerical_data=data.select_dtypes(include=['int64','float','int32'])
+categorical_data.head()
+from sklearn.preprocessing import LabelEncoder
+le=LabelEncoder()
+categorical_data=categorical_data.apply(LabelEncoder().fit_transform)
+categorical_data.head()
+Concatenating both Categorical data and Numerical data and divide the dataset into x and y
+df0=pd.concat([categorical_data,numerical_data],axis=1)
+x=df0.drop(['Price'],axis=1)
+y=df0['Price']
+Checking the top 5 rows of x and y
+x.head()
+y.head()
+Model Building¶
+
+Train-Test split
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=42)
+Import the models
+from sklearn.linear_model import LinearRegression
+from sklearn.svm import SVR
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import GradientBoostingRegressor
+Model Training
+lr=LinearRegression()
+lr.fit(x_train,y_train)
+svm=SVR()
+svm.fit(x_train,y_train)
+rf=RandomForestRegressor()
+rf.fit(x_train,y_train)
+gr=GradientBoostingRegressor()
+gr.fit(x_train,y_train)
+Prediction on Test data
+y_pred1=lr.predict(x_test)
+y_pred2=svm.predict(x_test)
+y_pred3=rf.predict(x_test)
+y_pred4=gr.predict(x_test)
+df1=pd.DataFrame({'Actual':y_test,'lr':y_pred1,'svm':y_pred2,'rf':y_pred3,'gr':y_pred4})
+df1
+Compare performance visually
+plt.subplot(221) 
+plt.plot(df1['Actual'].iloc[0:11],label='Actual')
+plt.plot(df1['lr'].iloc[0:11],label='lr')
+plt.legend()
+
+plt.subplot(222)
+plt.plot(df1['Actual'].iloc[0:11],label='Actual')
+plt.plot(df1['svm'].iloc[0:11],label='svm')
+plt.legend()
+
+plt.subplot(223)
+plt.plot(df1['Actual'].iloc[0:11],label='Actual')
+plt.plot(df1['rf'].iloc[0:11],label='rf')
+plt.legend()
+
+plt.subplot(224)
+plt.plot(df1['Actual'].iloc[0:11],label='Actual')
+plt.plot(df1['gr'].iloc[0:11],label='gr')
+plt.tight_layout()
+plt.legend()
+Evaluatin the algorithm
+from sklearn import metrics
+score1=metrics.r2_score(y_test,y_pred1)
+score2=metrics.r2_score(y_test,y_pred2)
+score3=metrics.r2_score(y_test,y_pred3)
+score4=metrics.r2_score(y_test,y_pred4)
+print(score1, score2, score3, score4)
+On the basis of r2_score we can say Random Forest is our best model.
+Mean absolute error
+s1=metrics.mean_absolute_error(y_test,y_pred1)
+s2=metrics.mean_absolute_error(y_test,y_pred2)
+s3=metrics.mean_absolute_error(y_test,y_pred3)
+s4=metrics.mean_absolute_error(y_test,y_pred4)
+print(s1, s2, s3, s4)
+Predict New price
+df2={'Airline':4,'Source':3,'Destination':5,'Route':84,'Total_Stops':1,'Additional_Info':8,'Duration':1140,'Journey_day':9,'Journey_month':6,'Dep_hour':18,'Dep_min':25,'Arrival_hour':13,'Arrival_min':35}
+df3=pd.DataFrame(df2,index=[0])
+new_pred=rf.predict(df3)
+print(new_pred)
+Model Saving¶
+
+Save Model Using Joblib
+rf=RandomForestRegressor()
+rf.fit(x,y)
+import joblib
+joblib.dump(rf,'model_joblib_rf')
+model=joblib.load('model_joblib_rf')
+model.predict(df3)
+Conclusion:
+On the basis of r2_score we can say Random Forest Regressor is our best model.
+
+
