@@ -1,0 +1,39 @@
+MACHINE LEARNING ASSIGNMENT-5
+ANSWER NO.1
+R squared is a statistical measure in a regression model that determines the proportion of variance in the dependent variable that can be explained by the independent variable. i.e. it shows how well the data fit the regression model.
+The residual some of squares measures the level of variance in the error term, or residuals, of a regression model. The smaller the residual sum of squares, the better your model fits your data, the greater the residual sum of squares, the poorer your model fits your data.
+ANSWER NO.2
+This gives you the distance from the linear line drawn to each particular variable. You could also describe TSS as the dispersion of observed variables around the mean, or the variance. So, the goal of TSS is to measure the total variability of  the dataset.
+The explained sum of squares, alternatively known as the model sum of squares due to regression, is a quantity used in describing how well a model, often a regression model, represents the data being modelled.
+The residual sum of squares measures the level of variance in the error term, or residuals, of a regression model. The smaller the residual sum of squares, the better your model fits your data, the greater the residual sum of squares, the poorer your model fits your data.
+Equation: TSS=ESS+RSS
+ANSWER NO.3
+While training a machine learning model, the model can easily be overfitted or underfitted. To avoid this, we use regularization in machine learning to properly fit a model onto our test set.Regularization techniques help reduce the chance of overfitting and help us get an optimal model.
+ANSWER NO.4
+The Gini Index or Gini Impurity is calculated by subtracting the sum of the squared probabilities of each class from one. It favours mostly the larger partitions and are very simple to implement. i.e. it calculates the probability of a certain randomly selected feature that was classified incorrectly.
+ANSWER NO.5
+Decision trees are prone to overfitting, especially when a tree is particularly deep. This is due to the amount of specificity we look at leading  to smaller samples of events that meet the previous assumptions. This small sample could lead to unsound conclusions.
+ANSWER NO.6
+Ensemble methods are techniques that aim at improving the accuracy of results in models by combining multiple models instead of using a single model. The combined models increase the accuracy of the results significantly. This has boosted the popularity of  ensemble methods in machine learning.
+ANSWER NO.7
+Bagging is a technique for reducing prediction variance by producing additional data for training from a dataset by combining repetitions with combinations to create multi-sets of the original data. Boosting is an iterative strategy for adjusting an observation’s weight based on the previous classification.
+ANSWER NO.8
+The out of bag error is the average error for each calculated using predictions from the trees that do not contain in their respective bootstrap sample. This allows the RandomForestClassifier to be fit and validated whilst being trained.
+ANSWER NO.9
+Cross-validation is a resampling procedure used to evaluate machine learning models on a limited data sample. The procedure has a single parameter called k that refers to the number of groups that a given data sample is to be split into. As such, the procedure is often called k-fold cross-validation.
+ANSWER NO.10
+Hyperparameter  tuning consists of finding a set of optimal hyperparameter values for a learning algorithm while applying this optimized algorithm to any data set. That combination of hyperparameters maximizes the model’s performance, minimizing a predefined loss function to produce better results with fewer errors.
+ANSWER NO.11
+A learning rate that is too large can cause the model to converge too quickly to a suboptimal solution, whereas l learning rate that is too small can cause the process to get stuck.
+ANSWER NO.12
+No, logistic regression only forms linear decision surface.
+ANSWER NO.13
+AdaBoost is the first designed boosting algorithm with a particular loss function. On the other hand, Gradient Boosting is a generic algorithm that assists in searching the approximate solutions to the additive modelling problem. This makes Gradient Boosting more flexible than AdaBoost.
+ANSWER NO.14
+In statistics and machine learning, the bias-variance tradeoff is the property of a model that the variance of the parameter estimated across samples can be reduced by increasing the bias in the estimated parameters.
+ANSWER NO.15
+Linear  Kernel is used when the data is Linearly separable, that is, it can be separated using a single Line. It is one of the most common kernels to be used. It is mostly used when there are a Large number of Features in a particular data set.
+RBF kernel is popular because of its similarity to K-Nearest Neihborhood Algorithm. It has the advantages of K-NN and overcomes the space complexity problem as RBF kernel Support Vector Machines just needs to store the support vectors during training and not the entire dataset.
+In machine learning, the polynomial kernel is a kernel function commonly used with support vector machines(SVMs) and other kernelized models, that represents the similarity of vectors (training samples) in a feature space over polynomials of the original variables, allowing
+
+
