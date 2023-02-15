@@ -1,0 +1,26 @@
+SQL ASSGNMENT-6
+ANSWER NO.1 A,C,D
+ANSWER NO.2 A,C,D
+ANSWER NO.3 B
+ANSWER NO.4 C
+ANSWER NO.5 B
+ANSWER NO.6 B
+ANSWER NO.7 A
+ANSWER NO.8 C
+ANSWER NO.9 D
+ANSWER NO.10 A
+ANSWER NO.11 Denormalization is he process of adding precomputed redundant data to an otherwise normalized relational database to improve read performance of the database. Normalizing a database involves removing redundancy so only a single copy exists of each piece of information.
+ANSWER NO.12 A database cursor is an identifier associated with a group of rows. It is, in a sense, a pointer to the current row in a buffer. You must use a cursor in the following cases: Statements that return more than one row of data from the database server: A SELECT statement requires a select cursor.
+ANSWER NO. 13 SELECT,UPDATE,DELETE,INSERT INTO, CREATE DATABASE, ALTER DATABASE,CREATE TABLE, ALTER TABLE, DROP TABLE, CREATE INDEX, DROP INDEX
+ANSWER NO. 14 SQL constraints are used to specify rules for the data in a table. Constraints are used to limit the type of data that can go int a table. This ensures the accuracy and reliability of the data in the table. If there is any violation between the constraint and the data action, the action is aborted.
+ANSWER NO. 15 Auto-increment allows a unique number to be generated automatically when a new record is inserted into a table. Often this is the primary key field that we would like to be created automatically every time a new record is inserted.
+
+
+
+
+
+
+
+
+
+
