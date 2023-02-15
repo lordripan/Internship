@@ -1,0 +1,16 @@
+MACHINE LEARNING ASSIGNMENT-6
+ANSWER NO.1-B
+ANSWER NO.2-B
+ANSWER NO.3-C
+ANSWER NO.4-C
+ANSWER NO.5-B
+ANSWER NO.6-A,D
+ANSWER NO.7-B
+ANSWER NO.8-A,B
+ANSWER NO.9-A,B
+ANSWER NO.10- The adjusted R-squared compensates for the addition of variables and only increases if the new predictor enhances the model above what would be obtained by probability.Conversely, it will decrease when a predictor improves the model less than what is predicted by chance.
+ANSWER NO.11- Similar to the lasso regression, ridge regression puts a similar constraint on the coefficients by introducing a penality factor. However, while lasso regression takes the magnitude of the coefficients,ridge regression takes the square. Ridge regression is also referred to as L2 Regularization.
+ANSWER NO.12- A variance inflation factor (VIF) is a measure of the amount of multicollinearity in regression analysis.As a rule of thumb, a VIF of three or below is not a cause for concern. As VIF increases, the less reliable your regression results are going to be.
+ANSWER NO. 13- To ensure that the gradient descent moves smoothly towards the minima and that the steps for gradient descent are updated at the same rate for all the features, we scale the data before feeding it to the model.
+ANSWER NO.14- The R Squared, Adjusted R Squared, F Statistics, RMSE,MSE,MAE are some metrics which you can use to evaluate your regression model.
+ANSWER NO.15- SENSTIVITY:0.45,SPECIFICITY:0.16,ACCURACY:0.42,PRECISION:0.95,RECALL:0.45
