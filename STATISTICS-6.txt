@@ -1,0 +1,17 @@
+STATISTICS-6
+ANSWER NO.1-D
+ANSWER NO.2-A
+ANSWER NO.3-A
+ANSWER NO.4-C
+ANSWER NO.5-C
+ANSWER NO.6-B
+ANSWER NO.7-C
+ANSWER NO.8-B
+ANSWER NO.9-B
+ANSWER NO.10- Histograms and box plots are very similar in that they both help to visualize and describe numeric data. Although histograms are better in determining the underlying distribution of the data, box plots allow you to compare multiple data sets better than histograms as they are less detailed and take up less space.
+ANSWER NO.11- Similar to vectors, you can use the square brackets to select one or multiple elements from a matrix. Whereas vectors have one dimensions. You should therefore use a comma to separate the rows you want to select from the columns.
+ANSWER NO.12- To assess statistical significance, you would use hypothesis testing. The null hypothesis and alternate hypothesis would be stated first. Second, you’d calculate the p-value, which is the likelihood of getting the test’s observed findings if the null hypothesis is true.
+ANSWER NO.-13 Any type of categorical data would not have a Gaussian distribution or lognormal distribution. Exponential distributions. Ex-The amount of tie that a car battery lasts or the amount of time untIl an earthquake occurs.
+ANSWER NO.14- Income is the classic example of when to use the median instead of the mean because its distribution tends to be skewed. The median indidcates that half of all incomes fall below 27581, and half are above it. For these data, the mean overestimates where most household incomes fall.
+ANSWER NO. 15- The likelihood is the probability that a particular outcome is observed when the true value of the parameter is, equivalent to the probability mass on; It is not a probability density over the parameter. The likelihood, should not be cofused with, which is the posterior probability of gien the data.
+
