@@ -1,0 +1,19 @@
+MACHINE LEARNING ASSIGNMENT-7
+ANSWER-1-D
+ANSWER-2-D
+ANSWER-3-B
+ANSWER-4-A
+ANSWER-5-A
+ANSWER-6-C
+ANSWER-7-B
+ANSWER-8-B
+ANSWER-9-0.5 GINI INDEX AND
+ANSWER-10-Random forest algorithm avoids and prevents overfitting by using multiple trees. The results are not accurate. This gives accurate and predise results. Decision trees require low computation, thus reducing time to implement and carrying low accuracy.
+ANSWER-11-Scaling is required to rescale the data and it’s used when we want features to be compared on the same scale for our algorithm. And, when all features are in the same scale, it also helps algorithms to understand the relative relationship better.The most common techniques of feature scaling are Normalization and Standardization.
+ANSWER-12-1)We can use fixed learning rate during training without worrying about learning rate decay.
+2)It has straight trajectory towards the minimum and it is guraranteed to converge in theory to the global minimum if the loss function is convex and to a local minimum if the loss function is not convex.
+ANSWER-13-Accuracy is not a good metric for imbalanced datasets.
+This model would receive a very good accuracy score as it predicted correcty for the majority of observations, but this hides the true performance of the model which is objectively not good as it ony predicts for one class.
+ANSWER-14-The F-score or F-measure is a measure of a test’s accuracy. It is calculated from the precision and recall of the test, where the precision is the number of true positive results divided by the number of all positive results, including those not identified correctly, and he recall is the number of true positive results divided by the number of all samples that should have been identified as positive. Precision is also known as positive predictive value, and recall is also known as sensitivity in diagnostic binary classification.
+Formula:2*[(Precision*Recall)/(Precision+Recall)]
+ANSWER-15-The fit() method will allow us to get the parameters of the scaling function. The transform() method will transform the dataset to proceed with further data analysis steps. The fit_transform() method will determine the parameters and transform the dataset. 
